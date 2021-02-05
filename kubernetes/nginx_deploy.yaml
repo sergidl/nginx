@@ -73,7 +73,7 @@ spec:
     spec:  
       containers:  
         - name: ingress-default  
-          image: ingress:latest  
+          image: nginx:1.19.6   
           imagePullPolicy: Always  
           resources:  
             limits:  
