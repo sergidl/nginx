@@ -16,10 +16,10 @@ metadata:
     app: nginx
   namespace: dlopez2
 spec:
+  replicas: 1 
   selector:
     matchLabels:
       app: nginx
-  replicas: 1 
   template:
     metadata:
       labels:
@@ -29,14 +29,14 @@ spec:
       - name: nginx 
         image: nginx:stable
         ports:
-        - containerPort: 80 
+          - containerPort: 80 
         volumeMounts:  
           mountPath: /use/share/nginx/html/
           - name: html-files  
-    volumes:  
-      - name: html-files  
-        configMap:  
-          name: nginx-index-html-configmap
+#    volumes:  
+#      - name: html-files  
+#        configMap:  
+#          name: nginx-index-html-configmap
 
 
 #    spec:
