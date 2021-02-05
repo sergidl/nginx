@@ -1,10 +1,10 @@
 kind: ConfigMap  
 apiVersion: v1  
 metadata:  
-  name: nginx-static-files  
+  name: ingress-default-static-files  
   namespace: dlopez2   
   labels:  
-    app: nginx 
+    app: ingress-default   
 data:  
   index.html: |  
     <!doctype html>  
@@ -45,165 +45,429 @@ data:
           </tr>  
          </table>  
       </body>  
-    </html> 
----
-
-
+    </html>  
+  main.css: |  
+    body {  
+      background-color: rgb(224,224,224);  
+      font-family: Verdana, Arial, Helvetica, sans-serif;  
+      font-size: 100%;  
+    }  
+    .class1 {  
+  ... 
+    }  
+    .class2 {  
+  ... 
+    }  
+    .class3 {  
+  ... 
+    }  
+    .class4 {  
+     ...
+    }   
+---  
 apiVersion: apps/v1  
 kind: Deployment  
 metadata:  
   labels:  
-    app: nginx   
-  name: nginx  
+    app: ingress-default   
+  name: ingress-default  
   namespace: dlopez2 
 spec:  
   selector:  
     matchLabels:  
-      app: nginx  
+      app: ingress-default  
   replicas: 1  
   template:  
     metadata:  
       labels:  
-        app: nginx    
-      name: nginx  
+        app: ingress-default    
+      name: ingress-default  
     spec:  
       containers:  
-        - name: nginx  
-          image: nginx:1.19.6  
+        - name: ingress-default  
+          image: <IMAGE_REGISTRY_REPO_TAG>  
           imagePullPolicy: Always  
+          resources:  
+            limits:  
+              cpu: 100m  
+              memory: 10Mi  
+            requests:  
+              cpu: 100m  
+              memory: 10Mi  
           volumeMounts:  
             - readOnly: true  
-              mountPath: /use/share/nginx/html/index.html
+              mountPath: html  
               name: html-files  
       volumes:  
         - name: html-files  
           configMap:  
-            name: nginx-static-files  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# apiVersion: apps/v1 
-# kind: Deployment
-# metadata:
-#   name: nginx-dlopez2
-#   labels:
-#     app: nginx
-#   namespace: dlopez2
-# spec:
-#   replicas: 1 
-#   selector:
-#     matchLabels:
-#       app: nginx
-#   template:
-#     metadata:
-#       labels:
-#         app: nginx
-#     spec:
-#       containers:
-#       - name: nginx
-#         image: nginx:1.19.6
-#         ports:
-#           - containerPort: 80
-#         volumeMounts:
-#           mountPath: /use/share/nginx/html/
-#             - name: html-files
-              #command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
-    # metadata:
-    #   labels:
-    #     app: nginx
-    # spec:  
-    #   containers:  
-    #   - name: nginx 
-    #     image: nginx:stable
-    #     ports:
-    #       - containerPort: 80 
-    #     volumeMounts:  
-    #       mountPath: /use/share/nginx/html/
-    #       - name: html-files  
-    #volumes:  
-    #  - name: html-files  
-    #    configMap:  
-    #      name: nginx-index-html-configmap
-
-
-#    spec:
-#      volumes:
- #     - name: html
-#        configMap:
-#          name: nginx-index-html-configmap
-#          items:
-#          - key: index.html
-#            path: index.html
-#
-#      containers:
-#      - name: nginx
-#        image: nginx:stable
-#        ports:
-#          - containerPort: 80
-
-
-#---
-#apiVersion: v1
-#kind: Pod
-#metadata:
-#  name: nginx
-#  labels:
-#    name: nginx
-#spec:
-#  containers:
-#  - name: nginx
-#    image: nginx
-#    ports:
-#      - containerPort: 80
-#    volumeMounts:
-#      - mountPath: /usr/share/nginx/html
- #       name: nginx-conf
-#        subPath: index.html
-#  volumes:
-#    - name: nginx-conf
-#      configMap:
-#        name: nginx-index-html-configmap
----
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: nginx
-#   namespace: dlopez2
-#   labels:  
-#     app: nginx
-# spec:
-#   selector:
-#     app: nginx
-#   ports:
-#     - protocol: TCP
-#       port: 80
-#       targetPort: 80
-      
+            name: ingress-default-static-files  
+---  
 kind: Service  
 apiVersion: v1  
 metadata:  
-  name: nginx  
+  name: ingress-default  
   namespace: dlopez2  
   labels:  
-    app: nginx  
+    app: ingress-default  
 spec:  
   selector:  
-    app: nginx  
+    app: ingress-default  
   ports:  
   - name: http  
     protocol: TCP  
     port: 80  
     targetPort: 8080  
+---  
+apiVersion: extensions/v1beta1  
+kind: Ingress  
+metadata:  
+  name: default-ingress  
+  namespace: dlopez2  
+  annotations:   
+    nginx.ingress.kubernetes.io/rewrite-target: /  
+    kubernetes.io/ingress.class: "nginx"    
+  labels:  
+    app: ingress-default  
+spec:  
+  rules:  
+  - http:  
+      paths:  
+      - path: /  
+        backend:  
+          serviceName: ingress-default  
+          servicePort: 80
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# kind: ConfigMap  
+# apiVersion: v1  
+# metadata:  
+#   name: nginx-static-files  
+#   namespace: dlopez2   
+#   labels:  
+#     app: nginx 
+# data:  
+#   index.html: |  
+#     <!doctype html>  
+#     <html>  
+#       <head>  
+#         <meta charset="utf-8">  
+#         <title>Cluster Ingress Index</title>  
+#         <link rel="stylesheet" href="main.css">  
+#       </head>  
+#       <body>  
+#         <table class="class1">  
+#           <tr>  
+#             <td class="class2">Kubernetes Platform</td>  
+#           </tr>  
+#           <tr>  
+#             <td class="class1">  
+#               <table class="class3">  
+#                 <tr><td><h1>Cluster Ingress Index</h1></td></tr>  
+#               </table>  
+#             </td>  
+#           </tr>  
+#           <tr>  
+#             <td>  
+#               <table class="class3">  
+#                 <tr>  
+#                 <td>  
+#                    <h2>The following are links to this cluster's ingress resources:</h2>  
+#                   </td>  
+#                 </tr>  
+#                 <tr>  
+#                 <td class="class4">  
+#                     <a href="https://<ROOT_INGRESS_PATH>" target="_blank">Root Ingress</a><br/>  
+#                     <a href="https://<OTHER_INGRESS_PATH>" target="_blank">Other Ingress</a><br/>   
+#                  </td>  
+#                </tr>  
+#               </table>  
+#             </td>  
+#           </tr>  
+#          </table>  
+#       </body>  
+#     </html> 
+# ---
+
+
+# apiVersion: apps/v1  
+# kind: Deployment  
+# metadata:  
+#   labels:  
+#     app: nginx   
+#   name: nginx  
+#   namespace: dlopez2 
+# spec:  
+#   selector:  
+#     matchLabels:  
+#       app: nginx  
+#   replicas: 1  
+#   template:  
+#     metadata:  
+#       labels:  
+#         app: nginx    
+#       name: nginx  
+#     spec:  
+#       containers:  
+#         - name: nginx  
+#           image: nginx:1.19.6  
+#           imagePullPolicy: Always  
+#           volumeMounts:  
+#             - readOnly: true  
+#               mountPath: /use/share/nginx/html/index.html
+#               name: html-files  
+#       volumes:  
+#         - name: html-files  
+#           configMap:  
+#             name: nginx-static-files  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # apiVersion: apps/v1 
+# # kind: Deployment
+# # metadata:
+# #   name: nginx-dlopez2
+# #   labels:
+# #     app: nginx
+# #   namespace: dlopez2
+# # spec:
+# #   replicas: 1 
+# #   selector:
+# #     matchLabels:
+# #       app: nginx
+# #   template:
+# #     metadata:
+# #       labels:
+# #         app: nginx
+# #     spec:
+# #       containers:
+# #       - name: nginx
+# #         image: nginx:1.19.6
+# #         ports:
+# #           - containerPort: 80
+# #         volumeMounts:
+# #           mountPath: /use/share/nginx/html/
+# #             - name: html-files
+#               #command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
+#     # metadata:
+#     #   labels:
+#     #     app: nginx
+#     # spec:  
+#     #   containers:  
+#     #   - name: nginx 
+#     #     image: nginx:stable
+#     #     ports:
+#     #       - containerPort: 80 
+#     #     volumeMounts:  
+#     #       mountPath: /use/share/nginx/html/
+#     #       - name: html-files  
+#     #volumes:  
+#     #  - name: html-files  
+#     #    configMap:  
+#     #      name: nginx-index-html-configmap
+
+
+# #    spec:
+# #      volumes:
+#  #     - name: html
+# #        configMap:
+# #          name: nginx-index-html-configmap
+# #          items:
+# #          - key: index.html
+# #            path: index.html
+# #
+# #      containers:
+# #      - name: nginx
+# #        image: nginx:stable
+# #        ports:
+# #          - containerPort: 80
+
+
+# #---
+# #apiVersion: v1
+# #kind: Pod
+# #metadata:
+# #  name: nginx
+# #  labels:
+# #    name: nginx
+# #spec:
+# #  containers:
+# #  - name: nginx
+# #    image: nginx
+# #    ports:
+# #      - containerPort: 80
+# #    volumeMounts:
+# #      - mountPath: /usr/share/nginx/html
+#  #       name: nginx-conf
+# #        subPath: index.html
+# #  volumes:
+# #    - name: nginx-conf
+# #      configMap:
+# #        name: nginx-index-html-configmap
+# ---
+# # apiVersion: v1
+# # kind: Service
+# # metadata:
+# #   name: nginx
+# #   namespace: dlopez2
+# #   labels:  
+# #     app: nginx
+# # spec:
+# #   selector:
+# #     app: nginx
+# #   ports:
+# #     - protocol: TCP
+# #       port: 80
+# #       targetPort: 80
+      
+# kind: Service  
+# apiVersion: v1  
+# metadata:  
+#   name: nginx  
+#   namespace: dlopez2  
+#   labels:  
+#     app: nginx  
+# spec:  
+#   selector:  
+#     app: nginx  
+#   ports:  
+#   - name: http  
+#     protocol: TCP  
+#     port: 80  
+#     targetPort: 8080  
