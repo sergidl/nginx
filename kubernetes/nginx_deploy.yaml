@@ -15,13 +15,13 @@ spec:
       labels:
         app: nginx
     spec:
-      volumes:
-      - name: html
-        configMap:
-          name: index.html
-          items:
-          - key: index.html
-            path: index.html
+#      volumes:
+#      - name: html
+#        configMap:
+#          name: index.html
+#          items:
+#          - key: index.html
+#            path: index.html
       containers:
       - name: nginx
         image: nginx:stable
@@ -42,7 +42,7 @@ spec:
     ports:
       - containerPort: 80
     volumeMounts:
-      - mountPath: /usr/share/nginx/html/index.html
+      - mountPath: /usr/share/nginx/html
         name: nginx-conf
         subPath: index.html
   volumes:
