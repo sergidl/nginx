@@ -1,38 +1,132 @@
 kind: ConfigMap  
 apiVersion: v1  
 metadata:  
-  name: nginx-index-html-configmap  
-  namespace: dlopez2   
+  name: nginx-static-files  
+  namespace: nginx   
   labels:  
-    app: nginx  
+    app: nginx 
 data:  
   index.html: |  
+    <!doctype html>  
+    <html>  
+      <head>  
+        <meta charset="utf-8">  
+        <title>Cluster Ingress Index</title>  
+        <link rel="stylesheet" href="main.css">  
+      </head>  
+      <body>  
+        <table class="class1">  
+          <tr>  
+            <td class="class2">Kubernetes Platform</td>  
+          </tr>  
+          <tr>  
+            <td class="class1">  
+              <table class="class3">  
+                <tr><td><h1>Cluster Ingress Index</h1></td></tr>  
+              </table>  
+            </td>  
+          </tr>  
+          <tr>  
+            <td>  
+              <table class="class3">  
+                <tr>  
+                <td>  
+                   <h2>The following are links to this cluster's ingress resources:</h2>  
+                  </td>  
+                </tr>  
+                <tr>  
+                <td class="class4">  
+                    <a href="https://<ROOT_INGRESS_PATH>" target="_blank">Root Ingress</a><br/>  
+                    <a href="https://<OTHER_INGRESS_PATH>" target="_blank">Other Ingress</a><br/>   
+                 </td>  
+               </tr>  
+              </table>  
+            </td>  
+          </tr>  
+         </table>  
+      </body>  
+    </html> 
 ---
-apiVersion: apps/v1 
-kind: Deployment
-metadata:
-  name: nginx-dlopez2
-  labels:
-    app: nginx
-  namespace: dlopez2
-spec:
-  replicas: 1 
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.19.6
-        ports:
-          - containerPort: 80
-        volumeMounts:
-          mountPath: /use/share/nginx/html/
-            - name: html-files
+
+
+apiVersion: apps/v1  
+kind: Deployment  
+metadata:  
+  labels:  
+    app: nginx   
+  name: nginx  
+  namespace: dlopez2 
+spec:  
+  selector:  
+    matchLabels:  
+      app: nginx  
+  replicas: 1  
+  template:  
+    metadata:  
+      labels:  
+        app: nginx    
+      name: nginx  
+    spec:  
+      containers:  
+        - name: nginx  
+          image: nginx:1.19.6  
+          imagePullPolicy: Always  
+          resources:  
+            limits:  
+              cpu: 100m  
+              memory: 10Mi  
+            requests:  
+              cpu: 100m  
+              memory: 10Mi  
+          volumeMounts:  
+            - readOnly: true  
+              mountPath: html  
+              name: html-files  
+      volumes:  
+        - name: html-files  
+          configMap:  
+            name: nginx-static-files  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# apiVersion: apps/v1 
+# kind: Deployment
+# metadata:
+#   name: nginx-dlopez2
+#   labels:
+#     app: nginx
+#   namespace: dlopez2
+# spec:
+#   replicas: 1 
+#   selector:
+#     matchLabels:
+#       app: nginx
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#       - name: nginx
+#         image: nginx:1.19.6
+#         ports:
+#           - containerPort: 80
+#         volumeMounts:
+#           mountPath: /use/share/nginx/html/
+#             - name: html-files
               #command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
     # metadata:
     #   labels:
@@ -46,10 +140,10 @@ spec:
     #     volumeMounts:  
     #       mountPath: /use/share/nginx/html/
     #       - name: html-files  
-    volumes:  
-      - name: html-files  
-        configMap:  
-          name: nginx-index-html-configmap
+    #volumes:  
+    #  - name: html-files  
+    #    configMap:  
+    #      name: nginx-index-html-configmap
 
 
 #    spec:
@@ -95,6 +189,8 @@ kind: Service
 metadata:
   name: nginx
   namespace: dlopez2
+  labels:  
+    app: nginx
 spec:
   selector:
     app: nginx
