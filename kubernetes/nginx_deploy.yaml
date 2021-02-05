@@ -84,7 +84,7 @@ spec:
               memory: 10Mi  
           volumeMounts:  
             - readOnly: true  
-              mountPath: html  
+              mountPath: /use/share/nginx/html  
               name: html-files  
       volumes:  
         - name: html-files  
