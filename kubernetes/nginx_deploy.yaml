@@ -1,7 +1,7 @@
 kind: ConfigMap  
 apiVersion: v1  
 metadata:  
-- name: nginx-static-files  
+  name: nginx-static-files  
   namespace: dlopez2   
   labels:  
     app: nginx 
@@ -54,7 +54,7 @@ kind: Deployment
 metadata:  
   labels:  
     app: nginx   
-- name: nginx  
+  name: nginx  
   namespace: dlopez2 
 spec:  
   selector:  
@@ -65,7 +65,7 @@ spec:
     metadata:  
       labels:  
         app: nginx    
-    - name: nginx  
+      name: nginx  
     spec:  
       containers:  
         - name: nginx  
@@ -74,11 +74,11 @@ spec:
           volumeMounts:  
             - readOnly: true  
               mountPath: /use/share/nginx/html/
-            - name: html-files  
+              name: html-files  
       volumes:  
         - name: html-files  
           configMap:  
-          - name: nginx-static-files  
+            name: nginx-static-files  
 
 
 
