@@ -30,10 +30,10 @@ spec:
         image: nginx:1.19.6
         ports:
           - containerPort: 80
-        lifecycle:
-          postStart:
-            exec:
-              command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
+        volumeMounts:
+          mountPath: /use/share/nginx/html/
+            - name: html-files
+              #command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
     # metadata:
     #   labels:
     #     app: nginx
@@ -46,10 +46,10 @@ spec:
     #     volumeMounts:  
     #       mountPath: /use/share/nginx/html/
     #       - name: html-files  
-#    volumes:  
-#      - name: html-files  
-#        configMap:  
-#          name: nginx-index-html-configmap
+    volumes:  
+      - name: html-files  
+        configMap:  
+          name: nginx-index-html-configmap
 
 
 #    spec:
