@@ -72,6 +72,7 @@ spec:
           image: nginx:1.19.6  
           imagePullPolicy: Always  
           volumeMounts:  
+            - readOnly: true  
               mountPath: /use/share/nginx/html/index.html
               name: html-files  
       volumes:  
