@@ -32,7 +32,7 @@ spec:
         - containerPort: 80 
         volumeMounts:  
           mountPath: /use/share/nginx/html/
-          name: html-files  
+          - name: html-files  
       volumes:  
       - name: html-files  
         configMap:  
