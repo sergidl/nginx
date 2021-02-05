@@ -24,15 +24,28 @@ spec:
     metadata:
       labels:
         app: nginx
-    spec:  
-      containers:  
-      - name: nginx 
-        image: nginx:stable
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19.6
         ports:
-          - containerPort: 80 
-        volumeMounts:  
-          mountPath: /use/share/nginx/html/
-          - name: html-files  
+          - containerPort: 80
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "echo '<html><body>Hello from the Si<body></html>' > /usr/share/nginx/html/index.html"]
+    # metadata:
+    #   labels:
+    #     app: nginx
+    # spec:  
+    #   containers:  
+    #   - name: nginx 
+    #     image: nginx:stable
+    #     ports:
+    #       - containerPort: 80 
+    #     volumeMounts:  
+    #       mountPath: /use/share/nginx/html/
+    #       - name: html-files  
 #    volumes:  
 #      - name: html-files  
 #        configMap:  
