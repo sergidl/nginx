@@ -33,7 +33,7 @@ spec:
         volumeMounts:  
           mountPath: /use/share/nginx/html/
           - name: html-files  
-      volumes:  
+    volumes:  
       - name: html-files  
         configMap:  
           name: nginx-index-html-configmap
