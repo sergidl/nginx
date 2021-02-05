@@ -51,19 +51,7 @@ data:
       background-color: rgb(224,224,224);  
       font-family: Verdana, Arial, Helvetica, sans-serif;  
       font-size: 100%;  
-    }  
-    .class1 {  
-  ... 
-    }  
-    .class2 {  
-  ... 
-    }  
-    .class3 {  
-  ... 
-    }  
-    .class4 {  
-     ...
-    }   
+    }    
 ---  
 apiVersion: apps/v1  
 kind: Deployment  
