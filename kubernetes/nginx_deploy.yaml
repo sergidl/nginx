@@ -26,17 +26,17 @@ spec:
         app: nginx
     spec:  
       containers:  
-        - name: nginx 
-          image: nginx:stable
-          ports:
-          - containerPort: 80 
-          volumeMounts:  
-              mountPath: html  
-              name: html-files  
+      - name: nginx 
+        image: nginx:stable
+        ports:
+        - containerPort: 80 
+        volumeMounts:  
+          mountPath: html  
+          name: html-files  
       volumes:  
-        - name: html-files  
-          configMap:  
-            name: nginx-index-html-configmap
+      - name: html-files  
+        configMap:  
+          name: nginx-index-html-configmap
 
 
 #    spec:
