@@ -15,4 +15,4 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: apply -f kubernetes -n dlopez2
+          args: apply -f kubernetes -n dlopez2 --validate=false
