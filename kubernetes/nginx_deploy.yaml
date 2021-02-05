@@ -73,7 +73,7 @@ spec:
     spec:  
       containers:  
         - name: ingress-default  
-          image: <IMAGE_REGISTRY_REPO_TAG>  
+          image: latest  
           imagePullPolicy: Always  
           resources:  
             limits:  
